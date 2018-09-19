@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>tester page</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+  <script type="text/javascript">
+    $(document).ready( function () {
+      //$('#main').keypress(function () { console.log(this.value); });
+      $('#main').keypress(
+        function (e) {
+          if (e.keyCode ==13) {
+            var myTextObj = {text: $('#main').val()};
+            $.ajax(
+              {
+                url:'http://127.0.0.1:8000/typein/looker/',
+                data: JSON.stringify(myTextObj),
+                success:function (e) {
+                  var diagList= e;
+                  var html='';
+                  for (var i = 0; i < diagList.length; i++) {
+
+                    html = html + `<form  id ='`+String(i)+`' name='`+String(diagList[i]['synonym'])+`' ><div class='form-group'>{{DiagnosisFormTemplate|safe}}
+                    </div></form><script>$("#`+String(i)+`> div > input").val('`+String(diagList[i]['synonym'])+`');
+                    $("#`+String(i)+`> div > input,select").attr('class','form-control');
+                    $("#`+String(i)+`> div > input,select").css('width','550px');<\/script>
+                    <input type="submit" value="submit"> `
+
+
+                  }
+                  $('#diagListForms').html(html)
+
+                },
+              }
+            );
+
+          }
+
+        }
+      )
+
+    });
+      </script>
+
+  </head>
+  <body >
+<div class="container">
+
+    <div id=""  style="width:500px;height:500px;display:inline-block;vertical-align:top;margin-top:20px;" >
+      <form class="" action="index.html" method="post">
+        <textarea  id="main" name="" value="" style="width:500px;height:500px;"></textarea>
+          <br>
+        <input id="mainSubmit" type="submit" name="" value="submit">
+      </form>
+
+    </div>
+
+    <div id="diagListForms" style="display:inline-block;vertical-align:top; margin-left:20px;margin-top:20px;"></div>
+
+
+</div>
+
+  </body>
+</html>
